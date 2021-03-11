@@ -8,7 +8,7 @@ class Movie {
   }
 
   static findingOne(id) {
-    return getDatabase().collection('movies').findOne({ _id: ObjectID(id) })
+    return getDatabase().collection('movies').findOne({ _id: ObjectID(id)})
   }
 
   static create(movie) {

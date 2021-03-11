@@ -10,6 +10,16 @@ class MoviesController {
     }
   }
 
+  static async findingOne(req, res) {
+    const { id } = req.params;
+    try {
+      const movies = await Movie.findingOne(id);
+      res.json(movies);
+    } catch(err) {
+      console.log(err);
+    }
+  }
+
   static async create(req, res) {
     try {
       const movie = await Movie.create(req.body);

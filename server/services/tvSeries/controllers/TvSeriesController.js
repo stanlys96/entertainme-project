@@ -14,7 +14,7 @@ class TvSeriesController {
     const { id } = req.params;
     try {
       const tvSeries = await TvSeries.findingOne(id);
-      res.json(tvSeries);
+      res.json(tvSeries); 
     } catch(err) {
       console.log(err);
     }
