@@ -1,10 +1,10 @@
-const TvSeries = require('../models/TvSeries');
+const Series = require('../models/Series');
 
-class TvSeriesController {
+class SeriesController {
   static async find(req, res) {
     try {
-      const tvSeries = await TvSeries.find();
-      res.json(tvSeries);
+      const series = await Series.find();
+      res.json(series);
     } catch(err) {
       console.log(err);
     }
@@ -13,8 +13,8 @@ class TvSeriesController {
   static async findingOne(req, res) {
     const { id } = req.params;
     try {
-      const tvSeries = await TvSeries.findingOne(id);
-      res.json(tvSeries); 
+      const series = await Series.findingOne(id);
+      res.json(series); 
     } catch(err) {
       console.log(err);
     }
@@ -22,8 +22,8 @@ class TvSeriesController {
 
   static async create(req, res) {
     try {
-      const tvSeries = await TvSeries.create(req.body);
-      res.json(tvSeries);
+      const series = await Series.create(req.body);
+      res.json(series);
     } catch(err) {
       console.log(err);
     }
@@ -33,7 +33,7 @@ class TvSeriesController {
     const { id } = req.params;
     const { title, overview, poster_path, popularity, tags } = req.body;
     try {
-      const tvSeries = await TvSeries.updating({
+      const series = await Series.updating({
         id,
         title,
         overview,
@@ -41,7 +41,7 @@ class TvSeriesController {
         popularity,
         tags
       })
-      res.json(tvSeries);
+      res.json(series);
     } catch(err) {
       console.log(err);
     }
@@ -50,12 +50,12 @@ class TvSeriesController {
   static async deleting(req, res) {
     const { id } = req.params;
     try {
-      const tvSeries = await TvSeries.deleting(id);
-      res.json(tvSeries);
+      const series = await Series.deleting(id);
+      res.json(series);
     } catch(err) {
       console.log(err);
     }
   }
 }
 
-module.exports = TvSeriesController;
+module.exports = SeriesController;

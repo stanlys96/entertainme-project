@@ -2,6 +2,7 @@ const { gql } = require('apollo-server');
 const axios = require('axios');
 const Redis = require('ioredis');
 const redis = new Redis();
+const url = 'http://localhost:4001/movies';
 
 module.exports = {
   typeDefs: gql`
@@ -55,7 +56,7 @@ module.exports = {
           if (moviesData) {
             return JSON.parse(moviesData);
           } else {
-            const { data } = await axios.get('http://localhost:4001/movies');
+            const { data } = await axios.get(url);
             redis.set('movies:data', JSON.stringify(data));
             return data
           }
@@ -65,7 +66,7 @@ module.exports = {
       },
       async getMovie(_, args) {
         try {
-          const { data } = await axios.get(`http://localhost:4001/movies/${args.id}`);
+          const { data } = await axios.get(`${url}/${args.id}`);
           return data
         } catch(err) {
           console.log(err); 
@@ -75,7 +76,7 @@ module.exports = {
     Mutation: {
       async addMovie(parent, args, context, info) {
         try {
-          const { data } = await axios.post('http://localhost:4001/movies', args.input);
+          const { data } = await axios.post(url, args.input);
           await redis.del('movies:data');
           return data.ops[0];
         } catch(err) {
@@ -84,8 +85,8 @@ module.exports = {
       },
       async updateMovie(parent, args, context, info) {
         try {
-          const { data } = await axios.put(`http://localhost:4001/movies/${args.input.id}`, args.input);
-          const { data: movieData } = await axios.get(`http://localhost:4001/movies/${args.input.id}`);
+          const { data } = await axios.put(`${url}/${args.input.id}`, args.input);
+          const { data: movieData } = await axios.get(`${url}/${args.input.id}`);
           await redis.del('movies:data');
           return movieData;
         } catch(err) {
@@ -94,8 +95,8 @@ module.exports = {
       },
       async deleteMovie(parent, args, context, info) {
         try {
-          const { data: movieData } = await axios.get(`http://localhost:4001/movies/${args.id}`);
-          const { data } = await axios.delete(`http://localhost:4001/movies/${args.id}`);
+          const { data: movieData } = await axios.get(`${url}/${args.id}`);
+          const { data } = await axios.delete(`${url}/${args.id}`);
           await redis.del('movies:data');
           return movieData;
         } catch(err) {
