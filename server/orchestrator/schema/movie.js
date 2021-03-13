@@ -1,5 +1,7 @@
 const { gql } = require('apollo-server');
 const axios = require('axios');
+const Redis = require('ioredis');
+const redis = new Redis();
 
 module.exports = {
   typeDefs: gql`
@@ -49,8 +51,14 @@ module.exports = {
     Query: {
       async movies() {
         try {
-          const { data } = await axios.get('http://localhost:4001/movies');
-          return data
+          const moviesData = await redis.get('movies:data');
+          if (moviesData) {
+            return JSON.parse(moviesData);
+          } else {
+            const { data } = await axios.get('http://localhost:4001/movies');
+            redis.set('movies:data', JSON.stringify(data));
+            return data
+          }
         } catch(err) {
           console.log(err);
         }
@@ -68,6 +76,7 @@ module.exports = {
       async addMovie(parent, args, context, info) {
         try {
           const { data } = await axios.post('http://localhost:4001/movies', args.input);
+          await redis.del('movies:data');
           return data.ops[0];
         } catch(err) {
           console.log(err);
@@ -77,6 +86,7 @@ module.exports = {
         try {
           const { data } = await axios.put(`http://localhost:4001/movies/${args.input.id}`, args.input);
           const { data: movieData } = await axios.get(`http://localhost:4001/movies/${args.input.id}`);
+          await redis.del('movies:data');
           return movieData;
         } catch(err) {
           console.log(err);
@@ -86,6 +96,7 @@ module.exports = {
         try {
           const { data: movieData } = await axios.get(`http://localhost:4001/movies/${args.id}`);
           const { data } = await axios.delete(`http://localhost:4001/movies/${args.id}`);
+          await redis.del('movies:data');
           return movieData;
         } catch(err) {
           console.log(err);
