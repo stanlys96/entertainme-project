@@ -24,9 +24,16 @@
   max-width: 1200px;
 }
 
+.btn-icon {
+  transition: transform 2s;
+}
+
+.btn-icon:hover {
+  transform: scale(1.15);
+}
+
 .movie-img {
   transition: transform 0.5s;
-  border: 2px solid #fff;
 }
 
 .movie-img:hover {
