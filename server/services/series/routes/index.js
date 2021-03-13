@@ -3,6 +3,6 @@ const router = express.Router();
 
 const tvSeriesRoutes = require('./tvSeries');
 
-router.use('/tvseries', tvSeriesRoutes);
+router.use('/series', tvSeriesRoutes);
 
 module.exports = router;

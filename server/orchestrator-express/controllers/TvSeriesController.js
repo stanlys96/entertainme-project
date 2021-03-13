@@ -2,6 +2,8 @@ const axios = require('axios');
 const Redis = require('ioredis');
 const redis = new Redis();
 
+const url = 'http://localhost:4002/tvseries';
+
 class TvSeriesController {
   static async getTvSeries(req, res) {
     try {
@@ -9,7 +11,7 @@ class TvSeriesController {
       if (tvSeriesData) {
         res.status(200).json(JSON.parse(tvSeriesData));
       } else {
-        const { data } = await axios.get('http://localhost:3002/tvseries');
+        const { data } = await axios.get(url);
         redis.set('tvseries:data', JSON.stringify(data));
         res.status(200).json(data);
       }
@@ -21,7 +23,7 @@ class TvSeriesController {
   static async getTvSeriesById(req, res) {
     const { id } = req.params;
     try {
-      const { data } = await axios.get(`http://localhost:3002/tvseries/${id}`);
+      const { data } = await axios.get(`${url}/${id}`);
       res.status(200).json(data);
     } catch(err) {
       res.status(500).json(err);
@@ -32,7 +34,7 @@ class TvSeriesController {
     const { title, overview, poster_path, popularity, tags } = req.body;
     try {
       await redis.del('tvseries:data')
-      const { data } = await axios.post('http://localhost:3002/tvseries', {
+      const { data } = await axios.post(url, {
         title,
         overview,
         poster_path,
@@ -50,7 +52,7 @@ class TvSeriesController {
     const { title, overview, poster_path, popularity, tags } = req.body;
     try {
       await redis.del('tvseries:data');
-      const { data } = await axios.put(`http://localhost:3002/tvseries/${id}`, {
+      const { data } = await axios.put(`${url}/${id}`, {
         title,
         overview,
         poster_path,
@@ -67,7 +69,7 @@ class TvSeriesController {
     const { id } = req.params;
     try {
       await redis.del('tvseries:data');
-      const { data } = await axios.delete(`http://localhost:3002/tvseries/${id}`);
+      const { data } = await axios.delete(`${url}/${id}`);
       res.status(200).json(data);
     } catch(err) {
       res.status(500).json(err);

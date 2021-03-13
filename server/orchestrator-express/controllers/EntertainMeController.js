@@ -9,7 +9,7 @@ class EntertainMeController {
       const tvSeriesData = await redis.get('tvseries:data');
       if (!moviesData) {
         try {
-          const movies = await axios.get('http://localhost:3001/movies');
+          const movies = await axios.get('http://localhost:4001/movies');
           redis.set('movies:data', JSON.stringify(movies.data));
         } catch(err) {
           res.status(500).json(err);
@@ -17,7 +17,7 @@ class EntertainMeController {
       } 
       if (!tvSeriesData) {
         try {
-          const tvSeries = await axios.get('http://localhost:3002/tvseries');
+          const tvSeries = await axios.get('http://localhost:4002/tvseries');
           redis.set('tvseries:data', JSON.stringify(tvSeries.data));
         } catch(err) {
           res.status(500).json(err);

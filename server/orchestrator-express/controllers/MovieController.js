@@ -2,6 +2,8 @@ const axios = require('axios');
 const Redis = require('ioredis');
 const redis = new Redis();
 
+const url = 'http://localhost:4001/movies';
+
 class MovieController {
   static async getMovies(req, res) {
     try {
@@ -9,7 +11,7 @@ class MovieController {
       if (moviesData) {
         res.status(200).json(JSON.parse(moviesData));
       } else {
-        const { data } = await axios.get('http://localhost:3001/movies');
+        const { data } = await axios.get(url);
         redis.set('movies:data', JSON.stringify(data));
         res.status(200).json(data);
       }
@@ -21,7 +23,7 @@ class MovieController {
   static async getMovieById(req, res) {
     const { id } = req.params;
     try {
-      const { data } = await axios.get(`http://localhost:3001/movies/${id}`);
+      const { data } = await axios.get(`${url}/${id}`);
       res.status(200).json(data);
     } catch(err) {
       res.status(500).json(err);
@@ -32,7 +34,7 @@ class MovieController {
     const { title, overview, poster_path, popularity, tags } = req.body;
     try {
       await redis.del('movies:data');
-      const { data } = await axios.post('http://localhost:3001/movies', {
+      const { data } = await axios.post(url, {
         title,
         overview,
         poster_path,
@@ -50,7 +52,7 @@ class MovieController {
     const { title, overview, poster_path, popularity, tags } = req.body;
     try {
       await redis.del('movies:data');
-      const { data } = await axios.put(`http://localhost:3001/movies/${id}`, {
+      const { data } = await axios.put(`${url}/${id}`, {
         title,
         overview,
         poster_path,
@@ -67,7 +69,7 @@ class MovieController {
     const { id } = req.params;
     try {
       await redis.del('movies:data');
-      const { data } = await axios.delete(`http://localhost:3001/movies/${id}`);
+      const { data } = await axios.delete(`${url}/${id}`);
       res.status(200).json(data);
     } catch(err) {
       res.status(500).json(err);
