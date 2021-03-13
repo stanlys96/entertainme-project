@@ -85,20 +85,20 @@ module.exports = {
       },
       async updateSeries(parent, args, context, info) {
         try {
-          const { data } = await axios.put(`${url}/${args.input.id}`, args.input);
-          const { data: seriesData } = await axios.get(`${url}/${args.input.id}`);
+          await axios.put(`${url}/${args.input.id}`, args.input);
           await redis.del('series:data');
-          return seriesData;
+          const { data } = await axios.get(`${url}/${args.input.id}`);
+          return data;
         } catch(err) {
           console.log(err);
         }
       },
       async deleteSeries(parent, args, context, info) {
         try {
-          const { data: seriesData } = await axios.get(`${url}/${args.id}`);
-          const { data } = await axios.delete(`${url}/${args.id}`);
+          const { data } = await axios.get(`${url}/${args.id}`);
+          await axios.delete(`${url}/${args.id}`);
           await redis.del('series:data');
-          return seriesData;
+          return data;
         } catch(err) {
           console.log(err);
         }

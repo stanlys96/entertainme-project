@@ -33,7 +33,6 @@ class MovieController {
   static async addMovie(req, res) {
     const { title, overview, poster_path, popularity, tags } = req.body;
     try {
-      await redis.del('movies:data');
       const { data } = await axios.post(url, {
         title,
         overview,
@@ -41,7 +40,8 @@ class MovieController {
         popularity,
         tags
       })
-      res.status(201).json(data);
+      await redis.del('movies:data');
+      res.status(201).json(data.ops);
     } catch(err) {
       res.status(500).json(err);
     }
@@ -51,15 +51,16 @@ class MovieController {
     const { id } = req.params;
     const { title, overview, poster_path, popularity, tags } = req.body;
     try {
-      await redis.del('movies:data');
-      const { data } = await axios.put(`${url}/${id}`, {
+      await axios.put(`${url}/${id}`, {
         title,
         overview,
         poster_path,
         popularity,
         tags 
       })
-      res.status(200).json(data);
+      const { data: movieData } = await axios.get(`${url}/${id}`);
+      await redis.del('movies:data');
+      res.status(200).json(movieData);
     } catch(err) {
       res.status(500).json(err);
     }
@@ -68,9 +69,10 @@ class MovieController {
   static async deleteMovie(req, res) {
     const { id } = req.params;
     try {
+      const { data: movieData } = await axios.get(`${url}/${id}`);
+      await axios.delete(`${url}/${id}`);
       await redis.del('movies:data');
-      const { data } = await axios.delete(`${url}/${id}`);
-      res.status(200).json(data);
+      res.status(200).json(movieData);
     } catch(err) {
       res.status(500).json(err);
     }

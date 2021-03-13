@@ -2,17 +2,17 @@ const axios = require('axios');
 const Redis = require('ioredis');
 const redis = new Redis();
 
-const url = 'http://localhost:4002/tvseries';
+const url = 'http://localhost:4002/series';
 
-class TvSeriesController {
-  static async getTvSeries(req, res) {
+class SeriesController {
+  static async getSeries(req, res) {
     try {
-      const tvSeriesData = await redis.get('tvseries:data');
-      if (tvSeriesData) {
-        res.status(200).json(JSON.parse(tvSeriesData));
+      const seriesData = await redis.get('series:data');
+      if (seriesData) {
+        res.status(200).json(JSON.parse(seriesData));
       } else {
         const { data } = await axios.get(url);
-        redis.set('tvseries:data', JSON.stringify(data));
+        redis.set('series:data', JSON.stringify(data));
         res.status(200).json(data);
       }
     } catch(err) {
@@ -20,7 +20,7 @@ class TvSeriesController {
     }
   }
 
-  static async getTvSeriesById(req, res) {
+  static async getSeriesById(req, res) {
     const { id } = req.params;
     try {
       const { data } = await axios.get(`${url}/${id}`);
@@ -30,10 +30,9 @@ class TvSeriesController {
     }
   }
 
-  static async addTvSeries(req, res) {
+  static async addSeries(req, res) {
     const { title, overview, poster_path, popularity, tags } = req.body;
     try {
-      await redis.del('tvseries:data')
       const { data } = await axios.post(url, {
         title,
         overview,
@@ -41,40 +40,43 @@ class TvSeriesController {
         popularity,
         tags
       })
-      res.status(201).json(data);
+      await redis.del('series:data')
+      res.status(201).json(data.ops);
     } catch(err) {
       res.status(500).json(err);
     }
   }
 
-  static async updateTvSeries(req, res) {
+  static async updateSeries(req, res) {
     const { id } = req.params;
     const { title, overview, poster_path, popularity, tags } = req.body;
     try {
-      await redis.del('tvseries:data');
-      const { data } = await axios.put(`${url}/${id}`, {
+      await axios.put(`${url}/${id}`, {
         title,
         overview,
         poster_path,
         popularity,
         tags 
       })
-      res.status(200).json(data);
+      const { data: seriesData } = await axios.get(`${url}/${id}`);
+      await redis.del('series:data');
+      res.status(200).json(seriesData);
     } catch(err) {
       res.status(500).json(err);
     }
   }
 
-  static async deleteTvSeries(req, res) {
+  static async deleteSeries(req, res) {
     const { id } = req.params;
     try {
-      await redis.del('tvseries:data');
-      const { data } = await axios.delete(`${url}/${id}`);
-      res.status(200).json(data);
+      const { data: seriesData } = await axios.get(`${url}/${id}`);
+      await axios.delete(`${url}/${id}`);
+      await redis.del('series:data');
+      res.status(200).json(seriesData);
     } catch(err) {
       res.status(500).json(err);
     }
   }
 }
 
-module.exports = TvSeriesController;
+module.exports = SeriesController;

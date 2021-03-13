@@ -1,7 +1,7 @@
 const express = require('express');
 const { connect } = require('./config/mongodb');
 const app = express();
-const PORT = 3000;
+const PORT = 4000;
 const router = require('./routes/index');
 
 app.use(express.json());

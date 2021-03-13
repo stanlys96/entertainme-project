@@ -85,20 +85,20 @@ module.exports = {
       },
       async updateMovie(parent, args, context, info) {
         try {
-          const { data } = await axios.put(`${url}/${args.input.id}`, args.input);
-          const { data: movieData } = await axios.get(`${url}/${args.input.id}`);
+          await axios.put(`${url}/${args.input.id}`, args.input);
           await redis.del('movies:data');
-          return movieData;
+          const { data } = await axios.get(`${url}/${args.input.id}`);
+          return data;
         } catch(err) {
           console.log(err);
         }
       },
       async deleteMovie(parent, args, context, info) {
         try {
-          const { data: movieData } = await axios.get(`${url}/${args.id}`);
-          const { data } = await axios.delete(`${url}/${args.id}`);
+          const { data } = await axios.get(`${url}/${args.id}`);
+          await axios.delete(`${url}/${args.id}`);
           await redis.del('movies:data');
-          return movieData;
+          return data;
         } catch(err) {
           console.log(err);
         }

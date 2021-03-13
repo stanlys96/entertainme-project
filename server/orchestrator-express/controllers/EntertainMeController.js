@@ -6,7 +6,7 @@ class EntertainMeController {
   static async findAll(req, res) {
     try {
       const moviesData = await redis.get('movies:data');
-      const tvSeriesData = await redis.get('tvseries:data');
+      const seriesData = await redis.get('series:data');
       if (!moviesData) {
         try {
           const movies = await axios.get('http://localhost:4001/movies');
@@ -15,17 +15,17 @@ class EntertainMeController {
           res.status(500).json(err);
         }
       } 
-      if (!tvSeriesData) {
+      if (!seriesData) {
         try {
-          const tvSeries = await axios.get('http://localhost:4002/tvseries');
-          redis.set('tvseries:data', JSON.stringify(tvSeries.data));
+          const series = await axios.get('http://localhost:4002/series');
+          redis.set('series:data', JSON.stringify(series.data));
         } catch(err) {
           res.status(500).json(err);
         }
       }
       res.status(200).json({
         movies: JSON.parse(await redis.get('movies:data')),
-        tvSeries: JSON.parse(await redis.get('tvseries:data'))
+        series: JSON.parse(await redis.get('series:data'))
       })
     } catch(err) {
       res.status(500).json(err);

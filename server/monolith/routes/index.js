@@ -2,9 +2,9 @@ const express = require('express');
 
 const router = express.Router();
 const moviesRoutes = require('./movies');
-const tvSeriesRoutes = require('./tvSeries');
+const seriesRoutes = require('./series');
 
 router.use('/movies', moviesRoutes);
-router.use('/tvseries', tvSeriesRoutes);
+router.use('/series', seriesRoutes);
 
 module.exports = router;

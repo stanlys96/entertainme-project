@@ -4,7 +4,7 @@ class MoviesController {
   static async find(req, res) {
     try {
       const movies = await Movie.find();
-      res.json(movies);
+      res.status(200).json(movies);
     } catch(err) {
       console.log(err);
     }
@@ -14,7 +14,7 @@ class MoviesController {
     const { id } = req.params;
     try {
       const movies = await Movie.findingOne(id);
-      res.json(movies);
+      res.status(200).json(movies);
     } catch(err) {
       console.log(err);
     }
@@ -23,7 +23,7 @@ class MoviesController {
   static async create(req, res) {
     try {
       const movie = await Movie.create(req.body);
-      res.json(movie);
+      res.status(201).json(movie.ops);
     } catch(err) {
       console.log(err);
     }
@@ -33,7 +33,7 @@ class MoviesController {
     const { id } = req.params;
     const { title, overview, poster_path, popularity, tags } = req.body;
     try {
-      const movie = await Movie.updating({
+      await Movie.updating({
         id,
         title,
         overview,
@@ -41,7 +41,8 @@ class MoviesController {
         popularity,
         tags
       })
-      res.json(movie);
+      const movieData = await Movie.findingOne(id);
+      res.status(200).json(movieData);
     } catch(err) {
       console.log(err);
     }
@@ -50,8 +51,9 @@ class MoviesController {
   static async deleting(req, res) {
     const { id } = req.params;
     try {
-      const movie = await Movie.deleting(id);
-      res.json(movie);
+      const movieData = await Movie.findingOne(id);
+      await Movie.deleting(id);
+      res.status(200).json(movieData);
     } catch(err) {
       console.log(err);
     }
