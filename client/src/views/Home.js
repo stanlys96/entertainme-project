@@ -56,7 +56,7 @@ function Home() {
   if (loading) return <h3>Loading...</h3>;
   return (
     <div id="home">
-      <h2 className="text-light mt-4 mb-4">Movies</h2>
+      <h2 className="text-light mt-4 mb-3">Movies</h2>
       <Carousel interval={1000000000} indicators={false}>
           {
             moviesData.map((movie, index) => {
@@ -75,7 +75,7 @@ function Home() {
           )
         }
       </Carousel>
-      <h2 className="text-light mt-5 mb-4">TV Series</h2>
+      <h2 className="text-light mt-4">TV Series</h2>
       <Carousel interval={1000000000} indicators={false}>
           {
             seriesData.map((series, index) => {

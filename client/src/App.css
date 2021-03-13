@@ -24,6 +24,16 @@
   max-width: 1200px;
 }
 
+.movie-img {
+  transition: transform 0.5s;
+  border: 2px solid #fff;
+}
+
+.movie-img:hover {
+  cursor: pointer;
+  transform: scale(1.15);
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
