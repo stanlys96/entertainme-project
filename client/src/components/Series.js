@@ -12,7 +12,7 @@ function Series(props) {
         />
       <h4 className="text-light mb-3">{data.title}</h4>
       <button className="btn btn-icon btn-danger mr-3"><i className="fas fa-heart"></i></button>
-      <button className="btn btn-icon btn btn-primary mr-3"><i class="fas fa-edit"></i></button>
+      <button className="btn btn-icon btn btn-primary mr-3"><i className="fas fa-edit"></i></button>
       <button className="btn btn-icon btn-warning"><i className="fas fa-trash-alt"></i></button>
     </div>  
   )

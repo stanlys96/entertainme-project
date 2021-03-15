@@ -1,7 +1,84 @@
-
+import { Modal, Button, Form } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { useMutation } from '@apollo/client';
+import { GET_DATA, UPDATE_MOVIE, DELETE_MOVIE } from '../graph/index';
+import Swal from 'sweetalert2';
+import { Toast } from '../styling/swal';
 
 function Movie(props) {
   const data = props.data;
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+  const [updateMovie, { data: updatedMovie }] = useMutation(UPDATE_MOVIE);
+  const [deleteMovie, { data: deletedMovie }] = useMutation(DELETE_MOVIE);
+
+  const [title, setTitle] = useState(data.title);
+  const [overview, setOverview] = useState(data.overview);
+  const [posterPath, setPosterPath] = useState(data.poster_path);
+  const [popularity, setPopularity] = useState(data.popularity);
+  const [tags, setTags] = useState(data.tags.join(','));
+
+  function handleSubmit(e) {
+    e.preventDefault();
+    if (!title || !overview || !posterPath || !popularity || !tags) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'Semua input harus diisi!'
+      })
+    } else if (Number(popularity) <= 0 || Number(popularity) > 10) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'Nilai popularity harus dari 0.1 sampai 10!'
+      }) 
+    } else {
+      updateMovie({ 
+        variables: { 
+          input: {
+            id: data._id,
+            title,
+            overview,
+            poster_path: posterPath,
+            popularity: +popularity,
+            tags: tags.split(',')
+          }
+        }, refetchQueries: [{ query: GET_DATA }]
+      })
+      Toast.fire({
+        icon: 'success',
+        title: 'Movie updated successfully!'
+      })
+      handleClose();
+    }
+  }
+
+  function handleDelete(e) {
+    e.preventDefault();
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        deleteMovie({
+          variables: {
+            id: data._id
+          },
+          refetchQueries: [{ query: GET_DATA }]
+        });
+        Toast.fire({
+          icon: 'success',
+          title: 'Movie deleted successfully!'
+        })
+      }
+    })
+  }
   return (
     <div style={{ display: 'inline-block' }} className="pb-3">
       <img
@@ -12,8 +89,37 @@ function Movie(props) {
         />
       <h4 className="text-light mb-3">{data.title}</h4>
       <button className="btn btn-danger btn-icon mr-3"><i className="fas fa-heart"></i></button>
-      <button className="btn btn-icon btn-primary mr-3"><i class="fas fa-edit"></i></button>
-      <button className="btn btn-icon btn-warning"><i className="fas fa-trash-alt"></i></button>
+      <button className="btn btn-icon btn-primary mr-3" onClick={handleShow}><i className="fas fa-edit"></i></button>
+      <button className="btn btn-icon btn-warning" onClick={handleDelete}><i className="fas fa-trash-alt"></i></button>
+      <Modal 
+        show={show} 
+        onHide={handleClose}
+        backdrop="static"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Edit Movie</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleSubmit}>
+            <Form.Label className="ml-1 text-align-center">Title: </Form.Label>
+            <Form.Control value={title} onChange={(e) => setTitle(e.target.value)} className="mb-2" type="text" placeholder="Title"/>           
+            <Form.Label className="ml-1">Overview: </Form.Label>
+            <Form.Control value={overview} onChange={(e) => setOverview(e.target.value)} className="mb-2" type="text" placeholder="Overview"/>           
+            <Form.Label className="ml-1">Poster Path: </Form.Label>
+            <Form.Control value={posterPath} onChange={(e) => setPosterPath(e.target.value)} className="mb-2" type="text" placeholder="Poster Path"/>           
+            <Form.Label className="ml-1">Popularity: </Form.Label>
+            <Form.Control value={popularity} onChange={(e) => setPopularity(e.target.value)} className="mb-2" type="number" placeholder="Popularity"/>           
+            <Form.Label className="ml-1">Tags: </Form.Label>
+            <Form.Control value={tags} onChange={(e) => setTags(e.target.value)} className="mb-2" type="text" placeholder="Tags"/>           
+            <Button onClick={handleClose} className="ml-3" variant="danger" style={{ float: 'right' }}>
+                Cancel
+            </Button>
+            <Button variant="primary" style={{ float: 'right' }} type="submit">
+                Submit
+            </Button>
+          </Form>
+        </Modal.Body>
+      </Modal>
     </div>  
   )
 }

@@ -3,27 +3,7 @@ import { useQuery, gql } from '@apollo/client';
 import { Carousel } from 'react-bootstrap';
 import Movie from '../components/Movie';
 import Series from '../components/Series';
-
-const GET_DATA = gql`
-  query GetData {
-    movies {
-      _id 
-      title
-      overview
-      poster_path
-      popularity
-      tags
-    }
-    series{
-      _id
-      title
-      overview
-      poster_path
-      popularity
-      tags
-    }
-  }
-`;
+import { GET_DATA } from '../graph/index';
 
 function processingData(input) {
   let output = [];

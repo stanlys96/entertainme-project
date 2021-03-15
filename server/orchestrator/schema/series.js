@@ -16,7 +16,7 @@ module.exports = {
     }
 
     type SeriesResult {
-      movie: Movie
+      series: Series
       error: String
     }
 
