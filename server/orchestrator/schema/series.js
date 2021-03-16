@@ -43,8 +43,8 @@ module.exports = {
     }
 
     extend type Mutation {
-      addSeries(input: AddSeriesInput): Series
-      updateSeries(input: EditSeriesInput): Series
+      addSeries(series: AddSeriesInput): Series
+      updateSeries(series: EditSeriesInput): Series
       deleteSeries(id: ID): Series
     }
   `,
@@ -76,8 +76,8 @@ module.exports = {
     Mutation: {
       async addSeries(parent, args, context, info) {
         try {
-          const { data } = await axios.post(url, args.input);
-          await redis.del('series:data');
+          const { data } = await axios.post(url, args.series);
+          redis.del('series:data');
           return data.ops[0];
         } catch(err) {
           console.log(err);
@@ -85,9 +85,9 @@ module.exports = {
       },
       async updateSeries(parent, args, context, info) {
         try {
-          await axios.put(`${url}/${args.input.id}`, args.input);
-          await redis.del('series:data');
-          const { data } = await axios.get(`${url}/${args.input.id}`);
+          await axios.put(`${url}/${args.series.id}`, args.series);
+          redis.del('series:data');
+          const { data } = await axios.get(`${url}/${args.series.id}`);
           return data;
         } catch(err) {
           console.log(err);
@@ -97,7 +97,7 @@ module.exports = {
         try {
           const { data } = await axios.get(`${url}/${args.id}`);
           await axios.delete(`${url}/${args.id}`);
-          await redis.del('series:data');
+          redis.del('series:data');
           return data;
         } catch(err) {
           console.log(err);

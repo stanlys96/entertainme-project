@@ -43,8 +43,8 @@ module.exports = {
     }
 
     extend type Mutation {
-      addMovie(input: AddMovieInput): Movie
-      updateMovie(input: EditMovieInput): Movie
+      addMovie(movie: AddMovieInput): Movie
+      updateMovie(movie: EditMovieInput): Movie
       deleteMovie(id: ID): Movie
     }
   `,
@@ -76,8 +76,8 @@ module.exports = {
     Mutation: {
       async addMovie(parent, args, context, info) {
         try {
-          const { data } = await axios.post(url, args.input);
-          await redis.del('movies:data');
+          const { data } = await axios.post(url, args.movie);
+          redis.del('movies:data');
           return data.ops[0];
         } catch(err) {
           console.log(err);
@@ -85,9 +85,9 @@ module.exports = {
       },
       async updateMovie(parent, args, context, info) {
         try {
-          await axios.put(`${url}/${args.input.id}`, args.input);
-          await redis.del('movies:data');
-          const { data } = await axios.get(`${url}/${args.input.id}`);
+          await axios.put(`${url}/${args.movie.id}`, args.movie);
+          redis.del('movies:data');
+          const { data } = await axios.get(`${url}/${args.movie.id}`);
           return data;
         } catch(err) {
           console.log(err);
@@ -97,7 +97,7 @@ module.exports = {
         try {
           const { data } = await axios.get(`${url}/${args.id}`);
           await axios.delete(`${url}/${args.id}`);
-          await redis.del('movies:data');
+          redis.del('movies:data');
           return data;
         } catch(err) {
           console.log(err);

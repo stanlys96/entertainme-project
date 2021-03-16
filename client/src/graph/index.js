@@ -23,7 +23,7 @@ export const GET_DATA = gql`
 
 export const ADD_MOVIE = gql`
 mutation addMovie($input: AddMovieInput) {
-  addMovie(input: $input) {
+  addMovie(movie: $input) {
     title
     overview
     poster_path
@@ -35,7 +35,7 @@ mutation addMovie($input: AddMovieInput) {
 
 export const UPDATE_MOVIE = gql`
   mutation editMovie($input: EditMovieInput) {
-    updateMovie(input: $input) {
+    updateMovie(movie: $input) {
       title
       overview
       poster_path
