@@ -4,12 +4,16 @@ import { useMutation } from '@apollo/client';
 import { GET_DATA, UPDATE_MOVIE, DELETE_MOVIE } from '../graph/index';
 import Swal from 'sweetalert2';
 import { Toast } from '../styling/swal';
+import { favoritesVar } from '../config/vars';
 
 function Movie(props) {
   const data = props.data;
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
+  const [showInfo, setShowInfo] = useState(false);
+  const handleCloseInfo = () => setShowInfo(false);
+  const handleShowInfo = () => setShowInfo(true);
   const [updateMovie, { data: updatedMovie }] = useMutation(UPDATE_MOVIE);
   const [deleteMovie, { data: deletedMovie }] = useMutation(DELETE_MOVIE);
 
@@ -79,6 +83,40 @@ function Movie(props) {
       }
     })
   }
+
+  function addToFavorites() {
+    const existingFavorites = favoritesVar();
+    let found = false;
+
+    const newData = {
+      id: data._id,
+      title,
+      overview,
+      poster_path: posterPath,
+      popularity: +popularity,
+      tags
+    }
+
+    existingFavorites.find(favorite => {
+      if (favorite.id === data._id) {
+        found = true;
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: `${title} is already a favorite!`
+        }) 
+      }
+    })
+
+    if (!found) {
+      favoritesVar([...existingFavorites, newData]);
+      Toast.fire({
+        icon: 'success',
+        title: `${title} successfully added to favorites!`
+      })
+    }
+  }
+
   return (
     <div style={{ display: 'inline-block' }} className="pb-3">
       <img
@@ -86,9 +124,10 @@ function Movie(props) {
         style={{ width: '250px', height: '156px', textAlign: 'center' }}
         src={data.poster_path}
         alt="First slide"
+        onClick={handleShowInfo}
         />
       <h4 className="text-light mb-3">{data.title}</h4>
-      <button className="btn btn-danger btn-icon mr-3"><i className="fas fa-heart"></i></button>
+      <button className="btn btn-danger btn-icon mr-3" onClick={addToFavorites}><i className="fas fa-heart"></i></button>
       <button className="btn btn-icon btn-primary mr-3" onClick={handleShow}><i className="fas fa-edit"></i></button>
       <button className="btn btn-icon btn-warning" onClick={handleDelete}><i className="fas fa-trash-alt"></i></button>
       <Modal 
@@ -118,6 +157,22 @@ function Movie(props) {
                 Submit
             </Button>
           </Form>
+        </Modal.Body>
+      </Modal>
+      <Modal 
+        show={showInfo} 
+        onHide={handleCloseInfo}
+        backdrop="static"
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Movie Info</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <h4 className="mt-2">Title: <span className="text-primary">{title}</span></h4>
+          <h4 className="mt-3">Overview: <span className="text-primary">{overview}</span></h4>
+          <h4 className="mt-3">Popularity: <span className="text-primary">{popularity}</span></h4>
+          <h4 className="mt-3">Tags: <span className="text-primary">[{tags.split(',').join(', ')}]</span></h4>
+          <Button variant="primary" style={{ margin: '25px auto 15px', textAlign: 'center', display: 'block' }} onClick={handleCloseInfo}>OK</Button>
         </Modal.Body>
       </Modal>
     </div>  

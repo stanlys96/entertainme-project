@@ -35,7 +35,7 @@ function Home() {
   }, [data]);
   if (loading) return <h3>Loading...</h3>;
   return (
-    <div id="home">
+    <div id="home" style={{ position: 'relative', zIndex: 2 }}>
       <h2 className="text-light mt-4 mb-3">Movies</h2>
       <Carousel interval={1000000000} indicators={false}>
           {

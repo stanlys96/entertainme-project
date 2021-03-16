@@ -16,7 +16,7 @@ function Navbar() {
   const [title, setTitle] = useState('');
   const [overview, setOverview] = useState('');
   const [posterPath, setPosterPath] = useState('');
-  const [popularity, setPopularity] = useState(undefined);
+  const [popularity, setPopularity] = useState('');
   const [tags, setTags] = useState('');
 
   function handleSubmit(e) {
