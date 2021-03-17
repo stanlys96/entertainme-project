@@ -2,7 +2,7 @@ FROM node:12.0-alpine
 
 WORKDIR /var/www/entertainMe
 
-ENV PORT=4001
+ENV PORT=4000
 
 COPY . .
 
