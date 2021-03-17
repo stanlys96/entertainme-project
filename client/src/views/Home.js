@@ -34,9 +34,7 @@ function Home() {
       changeSeriesData(processingSeriesData);
     }
   }, [data]);
-  if (loading) return (
-    <Loading />
-  );
+  if (loading) return <Loading />
   return (
     <div id="home" style={{ position: 'relative', zIndex: 2 }}>
       <h2 className="text-light mt-4 mb-3">Movies</h2>
