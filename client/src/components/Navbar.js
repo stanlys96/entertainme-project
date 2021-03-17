@@ -10,7 +10,15 @@ function Navbar() {
   const [show, setShow] = useState(false);
   const [addMovie, { data }] = useMutation(ADD_MOVIE);
 
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setShow(false);
+    setTitle('');
+    setOverview('');
+    setPosterPath('');
+    setPopularity('');
+    setTags('');
+  };
+
   const handleShow = () => setShow(true);
 
   const [title, setTitle] = useState('');

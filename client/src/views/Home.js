@@ -41,11 +41,11 @@ function Home() {
           {
             moviesData.map((movie, index) => {
               return (
-              <Carousel.Item key={Math.random() * 100000}>
+              <Carousel.Item key={index}>
                 {
                   movie.map((data, index) => {
                     return (
-                      <Movie data={data} key={Math.random() * 100000} />
+                      <Movie data={data} key={data._id} />
                     )
                   })
                 }
@@ -60,11 +60,11 @@ function Home() {
           {
             seriesData.map((series, index) => {
               return (
-              <Carousel.Item key={Math.random() * 100000}>
+              <Carousel.Item key={index}>
                 {
                   series.map((data, index) => {
                     return (
-                      <Series data={data} key={Math.random() * 100000} />
+                      <Series data={data} key={data._id} />
                     )
                   })
                 }
