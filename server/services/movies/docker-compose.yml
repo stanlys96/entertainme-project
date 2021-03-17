@@ -1,0 +1,20 @@
+version: "3"
+
+services:
+  web:
+    build: .
+    depends_on:
+      - mongo
+      - redis
+    volumes:
+      - ".:/var/www/movies"
+    ports: 
+      - "4005:4001"
+  mongo:
+    image: "mongo:4.4"
+    ports:
+      - "17017:27017"
+    command: mongo
+  redis:
+    image: "redis"
+    command: redis-server
