@@ -48,8 +48,8 @@ function Favorite(props) {
       <Card.Img variant="top" style={{ height: '60%' }} src={favorite.poster_path} />
       <Card.Body>
         <Card.Title>{favorite.title}</Card.Title>
-        <Button variant="primary" className="mr-3" onClick={handleShow}><i class="fas fa-info-circle"></i></Button>
-        <Button variant="danger" onClick={deleteFavorite}><i class="fas fa-trash-alt"></i></Button>
+        <Button variant="primary" className="mr-3" onClick={handleShow}><i className="fas fa-info-circle"></i></Button>
+        <Button variant="danger" onClick={deleteFavorite}><i className="fas fa-trash-alt"></i></Button>
       </Card.Body>
       <Modal 
         show={show} 

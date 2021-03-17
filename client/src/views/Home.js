@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react';
-import { useQuery, gql } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { Carousel } from 'react-bootstrap';
 import Movie from '../components/Movie';
 import Series from '../components/Series';
 import { GET_DATA } from '../graph/index';
+import Loading from '../components/Loading';
 
 function processingData(input) {
   let output = [];
@@ -33,7 +34,9 @@ function Home() {
       changeSeriesData(processingSeriesData);
     }
   }, [data]);
-  if (loading) return <h3>Loading...</h3>;
+  if (loading) return (
+    <Loading />
+  );
   return (
     <div id="home" style={{ position: 'relative', zIndex: 2 }}>
       <h2 className="text-light mt-4 mb-3">Movies</h2>
