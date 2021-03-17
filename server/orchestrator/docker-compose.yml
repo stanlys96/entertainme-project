@@ -8,13 +8,16 @@ services:
     command: mongod
   redis:
     image: "redis"
-    command: redis-server
+    ports:
+      - "5379:6379"
+    command: 
+      - redis-server
   web:
     build: .
     depends_on:
       - mongo
       - redis
     volumes:
-      - ".:/var/www/movies"
+      - ".:/var/www/entertainMe"
     ports: 
-      - "4005:4001"
+      - "4007:4000"
